@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Reproductor</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Andrea Delgado">
+</head>
+<body>
+	<div style="display:flex; justify-content: center;">
+		<h1>Reproductor de Video</h1>
+	</div>
+	
+
+	<div>
+		<label for="fileInput" style="margin-left: 2rem;">Selecciona un archivo de video:</label>
+		<input type="file" id="fileInput" style="width:22rem; height:4rem;">
+	</div>
+
+	<div style="display:flex; justify-content: center;">
+		<div id="loadingMessage" style="display:none;">Cargando...</div>
+		<video id="videoPlayer" width="640" height="360" controls style="display:none;" autoplay loop></video>
+	</div>
+	
+
+	<script>
+		// Obtener el elemento de entrada de archivo
+		const fileInput = document.getElementById('fileInput');
+
+		// Obtener el reproductor de video
+		const videoPlayer = document.getElementById('videoPlayer');
+
+		// Agregar un evento change al elemento de entrada de archivo para cargar el archivo seleccionado
+		fileInput.addEventListener('change', (event) => {
+			const file = event.target.files[0];
+			const type = file.type;
+			
+			if (type.startsWith('video/')) {
+				// Crear una URL del objeto de archivo seleccionado para el reproductor de video
+				const fileURL = URL.createObjectURL(file);
+				loadingMessage.style.display = 'block';
+				videoPlayer.style.display = 'none';
+				videoPlayer.src = fileURL;
+				videoPlayer.addEventListener('canplaythrough', () => {
+					// Ocultar el mensaje de carga y mostrar el elemento de video
+					loadingMessage.style.display = 'none';
+					videoPlayer.style.display = 'block';
+				});
+			} else {
+				videoPlayer.style.display = 'none';
+				videoPlayer.src = "";
+				alert('Solo se pueden cargar archivos de video');
+			}
+			
+		});
+		
+		
+	</script>
+</body>
+</html>
