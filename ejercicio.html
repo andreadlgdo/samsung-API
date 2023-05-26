@@ -1,27 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<title>Reproductor</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="Andrea Delgado">
+	<style>
+		body {
+			margin: 0;
+		}
+
+		.title {
+			display: flex;
+			justify-content: center;
+			background: cadetblue;
+			opacity: 80%;
+		}
+
+		.title--text {
+			font-family: monospace;
+			font-size: 3rem;
+		}
+
+		.selectedVideo{
+			margin: 3rem;
+		}
+
+		.selectedVideo--input{
+			margin: 0.5rem;
+		}
+
+		.selectedVideo--text {
+			font-size: 1rem;
+			font-family: sans-serif;
+		}
+
+		.video {
+			display: flex;
+			justify-content: center;
+		}
+
+		.video--wrapper {
+			display: none;
+		}
+
+		.buttons {
+			display: none;
+			margin-top: 2rem;
+		}
+
+		.button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 3rem;
+			width: 4rem;
+			border: none;
+			background: lightskyblue;
+		}
+
+		.button:hover {
+			background: lightslategrey;
+		}
+
+		.button--image {
+			height: 1rem;
+			width: 1rem;
+		}
+	</style>
 </head>
 <body>
-	<div style="display:flex; justify-content: center;">
-		<h1>Reproductor de Video</h1>
-	</div>
-	
-
-	<div>
-		<label for="fileInput" style="margin-left: 2rem;">Selecciona un archivo de video:</label>
-		<input type="file" id="fileInput" style="width:22rem; height:4rem;">
+	<div class="title">
+		<h1 class="title--text">Reproductor de Video</h1>
 	</div>
 
-	<div style="display:flex; justify-content: center;">
-		<div id="loadingMessage" style="display:none;">Cargando...</div>
-		<video id="videoPlayer" width="640" height="360" controls style="display:none;" autoplay loop></video>
+	<div class="selectedVideo">
+		<label class="selectedVideo--text" for="fileInput">Selecciona un archivo de video:</label>
+		<input class="selectedVideo--input" type="file" id="fileInput" >
 	</div>
-	
+
+	<div class="video">
+		<div id="loadingMessage" class="video--wrapper">Cargando...</div>
+		<video id="videoPlayer" width="640" height="360" controls class="video--wrapper" autoplay loop></video>
+	</div>
+
+	<div id="buttons" class="buttons">
+		<button id="volumeDownButton" class="button">
+			<img src="images/bajarVolumen.png" alt="bajar volumen" class="button--image">
+		</button>
+		<button id="playButton" class="button">
+			<img src="images/play.png" alt="play" class="button--image">
+		</button>
+		<button id="pauseButton" class="button">
+			<img src="images/pause.png" alt="pause" class="button--image">
+		</button>
+		<button id="volumeUpButton" class="button">
+			<img src="images/subirVolumen.png" alt="subir volumen" class="button--image">
+		</button>
+	</div>
 
 	<script>
 		// Obtener el elemento de entrada de archivo
@@ -29,6 +105,15 @@
 
 		// Obtener el reproductor de video
 		const videoPlayer = document.getElementById('videoPlayer');
+
+
+		// Obtener los botones
+		const buttons = document.getElementById('buttons');
+
+		const playButton = document.getElementById('playButton');
+		const pauseButton = document.getElementById('pauseButton');
+		const volumeUpButton = document.getElementById('volumeUpButton');
+		const volumeDownButton = document.getElementById('volumeDownButton');
 
 		// Agregar un evento change al elemento de entrada de archivo para cargar el archivo seleccionado
 		fileInput.addEventListener('change', (event) => {
@@ -40,21 +125,44 @@
 				const fileURL = URL.createObjectURL(file);
 				loadingMessage.style.display = 'block';
 				videoPlayer.style.display = 'none';
+				buttons.style.display = 'none';
 				videoPlayer.src = fileURL;
 				videoPlayer.addEventListener('canplaythrough', () => {
 					// Ocultar el mensaje de carga y mostrar el elemento de video
 					loadingMessage.style.display = 'none';
 					videoPlayer.style.display = 'block';
+					buttons.style.display = 'flex';
+					buttons.style.justifyContent = 'center';
+					buttons.style.gap = '1rem';
 				});
 			} else {
 				videoPlayer.style.display = 'none';
+				buttons.style.display = 'none';
 				videoPlayer.src = "";
 				alert('Solo se pueden cargar archivos de video');
 			}
-			
 		});
-		
-		
+
+		// Agregar eventos de clic a los botones
+		playButton.addEventListener('click', () => {
+			videoPlayer.play();
+		});
+
+		pauseButton.addEventListener('click', () => {
+			videoPlayer.pause();
+		});
+
+		volumeUpButton.addEventListener('click', () => {
+			if (videoPlayer.volume < 1) {
+				videoPlayer.volume += 0.1;
+			}
+		});
+
+		volumeDownButton.addEventListener('click', () => {
+			if (videoPlayer.volume > 0) {
+				videoPlayer.volume -= 0.1;
+			}
+		});
 	</script>
 </body>
 </html>
